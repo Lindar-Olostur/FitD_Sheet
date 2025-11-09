@@ -484,6 +484,76 @@
             display: block;
             margin: 4px 0;
         }
+
+        /* Распределение навыков */
+        .action-category {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .action-category-title {
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+
+        .action-name {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .action-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-value {
+            min-width: 30px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .action-dots {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-dot {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+        }
+
+        .action-dot.filled {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .action-dot:hover:not(.filled) {
+            border-color: var(--accent);
+            background: rgba(196, 69, 69, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -649,11 +719,8 @@
                     <p style="margin-bottom: 20px; color: #aaa; font-size: 14px;">
                         Выберите класс вашего персонажа. Это определит его начальные характеристики и способности.
                     </p>
-                    <div class="playbook-grid" id="playbookGrid">
-                        <!-- Карточки playbook будут добавлены через JavaScript -->
-                    </div>
                     
-                    <div class="wizard-navigation">
+                    <div class="wizard-navigation" style="margin-top: 0; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border);">
                         <div class="wizard-nav-left">
                             <button type="button" class="btn-secondary" onclick="closeCreateModal()">Выход</button>
                         </div>
@@ -663,29 +730,37 @@
                             <button type="button" class="btn-primary" onclick="validateAndGoToStep2()">Далее</button>
                         </div>
                     </div>
+                    
+                    <div class="playbook-grid" id="playbookGrid">
+                        <!-- Карточки playbook будут добавлены через JavaScript -->
+                    </div>
                 </div>
                 
-                <!-- Шаг 2: Имя и детали -->
+                <!-- Шаг 2: Распределение навыков -->
                 <div class="wizard-step-content" id="step2">
-                    <h3 style="margin-bottom: 15px; color: var(--accent);">Основная информация</h3>
-                    <div class="form-group">
-                        <label for="newCharacterName">Имя персонажа *</label>
-                        <input type="text" id="newCharacterName" placeholder="Введите имя">
-                    </div>
-                    
+                    <h3 style="margin-bottom: 15px; color: var(--accent);">Распределение навыков</h3>
                     <div class="form-group">
                         <label>Выбранная игровая книга</label>
                         <input type="text" id="selectedPlaybookName" readonly style="background: #2a2a2a; cursor: not-allowed;">
                     </div>
                     
-                    <div class="wizard-navigation">
+                    <div class="wizard-navigation" style="margin-top: 0; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border);">
                         <div class="wizard-nav-left">
                             <button type="button" class="btn-secondary" onclick="goToStep(1)">Назад</button>
                         </div>
                         <div class="wizard-nav-right">
                             <button type="button" class="btn-tertiary" onclick="randomStep2()">Случайно</button>
                             <button type="button" class="btn-tertiary" onclick="autoCreateCharacter()">Авто</button>
-                            <button type="button" class="btn-primary" onclick="goToStep(3)">Далее</button>
+                            <button type="button" class="btn-primary" onclick="validateAndGoToStep3()">Далее</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <p style="font-size: 13px; color: #aaa; margin-bottom: 15px;">
+                            Распределите <strong id="remainingPoints">4</strong> очков среди навыков (максимум 4 очка на навык)
+                        </p>
+                        <div id="actionsDistribution">
+                            <!-- Навыки будут добавлены через JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -735,8 +810,14 @@
         let currentCharacterId = null;
         let characters = {};
         let playbooks = [];
+        let actionsData = {
+            "Чутьё": ["Охота", "Изучение", "Разведка", "Ремесло"],
+            "Удаль": ["Сноровка", "Проникновение", "Драка", "Разрушение"],
+            "Воля": ["Резонанс", "Приказ", "Общение", "Манипулирование"]
+        }; // Fallback данные по умолчанию
         let selectedPlaybook = null;
         let currentWizardStep = 1;
+        let characterActions = {}; // Распределенные очки навыков
         
         // Базовый шаблон персонажа
         function createEmptyCharacter() {
@@ -1047,45 +1128,80 @@
                 const response = await fetch('playbooks.json');
                 const data = await response.json();
                 playbooks = data.playbooks || [];
+                actionsData = data.actions || {};
                 console.log('Playbooks загружены:', playbooks);
+                console.log('Actions загружены:', actionsData);
             } catch (error) {
                 console.error('Ошибка загрузки playbooks:', error);
                 // Fallback на встроенные данные
+                actionsData = {
+                    "Чутьё": ["Охота", "Изучение", "Разведка", "Ремесло"],
+                    "Удаль": ["Сноровка", "Проникновение", "Драка", "Разрушение"],
+                    "Воля": ["Резонанс", "Приказ", "Общение", "Манипулирование"]
+                };
                 playbooks = [
                     {
                         id: "cutter",
                         name: "Головорез",
-                        description: "Головорезы хороши в сражениях с насилием и запугиванием. Выбери Головореза, если хочешь прокладывать себе путь боем."
+                        description: "Головорезы хороши в сражениях с насилием и запугиванием. Выбери Головореза, если хочешь прокладывать себе путь боем.",
+                        startingActions: {
+                            "Драка": 2,
+                            "Приказ": 1
+                        }
                     },
                     {
                         id: "hound",
                         name: "Ищейка",
-                        description: "Ищейки хороши в выслеживании и дальнобойном бою. Выбери Ищейку, если хочешь диктовать бой на своих условиях."
+                        description: "Ищейки хороши в выслеживании и дальнобойном бою. Выбери Ищейку, если хочешь диктовать бой на своих условиях.",
+                        startingActions: {
+                            "Охота": 2,
+                            "Разведка": 1
+                        }
                     },
                     {
                         id: "leech",
                         name: "Умелец",
-                        description: "Умельцы хороши в алхимии, механике и саботаже. Выбери Умельца, если хочешь использовать странные вещества и инструменты."
+                        description: "Умельцы хороши в алхимии, механике и саботаже. Выбери Умельца, если хочешь использовать странные вещества и инструменты.",
+                        startingActions: {
+                            "Ремесло": 2,
+                            "Разрушение": 1
+                        }
                     },
                     {
                         id: "lurk",
                         name: "Проныра",
-                        description: "Проныры хороши в тихом передвижении и незаметном проникновении. Выбери Проныру, если хочешь проводить время в тенях."
+                        description: "Проныры хороши в тихом передвижении и незаметном проникновении. Выбери Проныру, если хочешь проводить время в тенях.",
+                        startingActions: {
+                            "Проникновение": 2,
+                            "Сноровка": 1
+                        }
                     },
                     {
                         id: "slide",
                         name: "Артист",
-                        description: "Артисты хороши в социальном взаимодействии и обмане. Выбери Артиста, если хочешь манипулировать и вводить людей в заблуждение."
+                        description: "Артисты хороши в социальном взаимодействии и обмане. Выбери Артиста, если хочешь манипулировать и вводить людей в заблуждение.",
+                        startingActions: {
+                            "Манипулирование": 2,
+                            "Общение": 1
+                        }
                     },
                     {
                         id: "spider",
                         name: "Кукловод",
-                        description: "Кукловоды хороши в продуманных планах и манёврах. Выбери Кукловода, если хочешь помогать товарищам и вести дела с другими организациями."
+                        description: "Кукловоды хороши в продуманных планах и манёврах. Выбери Кукловода, если хочешь помогать товарищам и вести дела с другими организациями.",
+                        startingActions: {
+                            "Общение": 2,
+                            "Изучение": 1
+                        }
                     },
                     {
                         id: "whisper",
                         name: "Мистик",
-                        description: "Мистики хороши в магических ритуалах и взаимодействии с призраками. Выбери Мистика, если хочешь соприкоснуться с мистическими силами."
+                        description: "Мистики хороши в магических ритуалах и взаимодействии с призраками. Выбери Мистика, если хочешь соприкоснуться с мистическими силами.",
+                        startingActions: {
+                            "Резонанс": 2,
+                            "Изучение": 1
+                        }
                     }
                 ];
             }
@@ -1166,11 +1282,219 @@
             // Если переходим на шаг 2, заполняем информацию о выбранном playbook
             if (step === 2 && selectedPlaybook) {
                 document.getElementById('selectedPlaybookName').value = selectedPlaybook.name;
-                const nameInput = document.getElementById('newCharacterName');
-                if (nameInput) {
-                    setTimeout(() => nameInput.focus(), 100);
-                }
+                // Инициализируем распределение навыков
+                initializeActionsDistribution();
             }
+        }
+
+        // Инициализация распределения навыков
+        function initializeActionsDistribution() {
+            // Если данные еще не загружены, загружаем их
+            if (!actionsData || Object.keys(actionsData).length === 0) {
+                loadPlaybooks().then(() => {
+                    initializeActionsDistribution();
+                });
+                return;
+            }
+            
+            // Сбрасываем распределение
+            characterActions = {};
+            
+            // Если есть начальные навыки от playbook, применяем их
+            if (selectedPlaybook && selectedPlaybook.startingActions) {
+                characterActions = { ...selectedPlaybook.startingActions };
+            }
+            
+            // Рендерим интерфейс
+            renderActionsDistribution();
+        }
+
+        // Получение количества стартовых очков
+        function getStartingPoints() {
+            if (!selectedPlaybook || !selectedPlaybook.startingActions) return 0;
+            return Object.values(selectedPlaybook.startingActions).reduce((sum, val) => sum + val, 0);
+        }
+
+        // Получение доступных очков для распределения
+        function getAvailablePoints() {
+            const startingPoints = getStartingPoints();
+            const totalSpent = getTotalSpentPoints();
+            return 4 - (totalSpent - startingPoints);
+        }
+
+        // Отображение интерфейса распределения навыков
+        function renderActionsDistribution() {
+            const container = document.getElementById('actionsDistribution');
+            if (!container) {
+                console.error('Контейнер actionsDistribution не найден');
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            console.log('renderActionsDistribution вызвана, actionsData:', actionsData);
+            
+            if (!actionsData || Object.keys(actionsData).length === 0) {
+                console.warn('actionsData пуст, пытаемся загрузить...');
+                container.innerHTML = '<p style="color: #aaa;">Загрузка навыков...</p>';
+                // Используем fallback данные сразу
+                if (!actionsData) {
+                    actionsData = {
+                        "Чутьё": ["Охота", "Изучение", "Разведка", "Ремесло"],
+                        "Удаль": ["Сноровка", "Проникновение", "Драка", "Разрушение"],
+                        "Воля": ["Резонанс", "Приказ", "Общение", "Манипулирование"]
+                    };
+                }
+                // Попробуем загрузить данные еще раз
+                setTimeout(() => {
+                    if (!actionsData || Object.keys(actionsData).length === 0) {
+                        loadPlaybooks().then(() => {
+                            renderActionsDistribution();
+                        });
+                    } else {
+                        renderActionsDistribution();
+                    }
+                }, 100);
+                return;
+            }
+            
+            console.log('Отрисовываем навыки, категорий:', Object.keys(actionsData).length);
+            
+            // Проходим по каждой категории действий
+            Object.keys(actionsData).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'action-category';
+                
+                const title = document.createElement('div');
+                title.className = 'action-category-title';
+                title.textContent = category;
+                categoryDiv.appendChild(title);
+                
+                // Проходим по каждому навыку в категории
+                actionsData[category].forEach(actionName => {
+                    const actionDiv = document.createElement('div');
+                    actionDiv.className = 'action-item';
+                    
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'action-name';
+                    nameSpan.textContent = actionName;
+                    actionDiv.appendChild(nameSpan);
+                    
+                    const dotsDiv = document.createElement('div');
+                    dotsDiv.className = 'action-dots';
+                    
+                    const currentValue = characterActions[actionName] || 0;
+                    
+                    // Создаем 4 круга для каждого навыка
+                    for (let i = 0; i < 4; i++) {
+                        const dot = document.createElement('div');
+                        dot.className = 'action-dot';
+                        if (i < currentValue) {
+                            dot.classList.add('filled');
+                        }
+                        dot.onclick = () => toggleActionDot(actionName, i + 1);
+                        dotsDiv.appendChild(dot);
+                    }
+                    
+                    actionDiv.appendChild(dotsDiv);
+                    categoryDiv.appendChild(actionDiv);
+                });
+                
+                container.appendChild(categoryDiv);
+            });
+            
+            updateRemainingPoints();
+        }
+
+        // Переключение круга навыка
+        function toggleActionDot(actionName, targetValue) {
+            const currentValue = characterActions[actionName] || 0;
+            const startingValue = selectedPlaybook?.startingActions?.[actionName] || 0;
+            const totalSpent = getTotalSpentPoints();
+            const startingPoints = getStartingPoints();
+            const availablePoints = 4 - (totalSpent - startingPoints);
+            
+            // Если кликнули на уже заполненный круг, уменьшаем до этого значения
+            if (targetValue <= currentValue) {
+                const newValue = targetValue - 1;
+                // Нельзя уменьшить ниже стартового значения
+                if (newValue < startingValue) {
+                    characterActions[actionName] = startingValue;
+                } else {
+                    characterActions[actionName] = newValue;
+                    if (characterActions[actionName] === startingValue && startingValue > 0) {
+                        // Оставляем стартовое значение
+                    } else if (characterActions[actionName] === 0) {
+                        delete characterActions[actionName];
+                    }
+                }
+            } else {
+                // Если кликнули на незаполненный круг, увеличиваем
+                const pointsNeeded = targetValue - currentValue;
+                if (availablePoints < pointsNeeded) {
+                    // Недостаточно очков
+                    return;
+                }
+                characterActions[actionName] = targetValue;
+            }
+            
+            renderActionsDistribution();
+        }
+
+
+        // Получение общего количества потраченных очков
+        function getTotalSpentPoints() {
+            return Object.values(characterActions).reduce((sum, val) => sum + val, 0);
+        }
+
+        // Обновление отображения оставшихся очков
+        function updateRemainingPoints() {
+            const startingPoints = getStartingPoints();
+            const totalSpent = getTotalSpentPoints();
+            const availablePoints = 4 - (totalSpent - startingPoints);
+            const remainingEl = document.getElementById('remainingPoints');
+            if (remainingEl) {
+                remainingEl.textContent = availablePoints;
+                remainingEl.style.color = availablePoints === 0 ? '#4caf50' : availablePoints < 0 ? '#ff6b6b' : 'var(--text-primary)';
+            }
+            
+            // Обновляем состояние кругов (блокируем если нет очков)
+            document.querySelectorAll('.action-dot').forEach((dot, dotIndex) => {
+                const actionItem = dot.closest('.action-item');
+                if (!actionItem) return;
+                
+                const actionName = actionItem.querySelector('.action-name').textContent;
+                const currentValue = characterActions[actionName] || 0;
+                const startingValue = selectedPlaybook?.startingActions?.[actionName] || 0;
+                const dotValue = (dotIndex % 4) + 1;
+                
+                // Блокируем круги, если нет очков или уже достигнут максимум
+                if (availablePoints <= 0 && dotValue > currentValue) {
+                    dot.style.opacity = '0.3';
+                    dot.style.cursor = 'not-allowed';
+                } else if (dotValue <= startingValue) {
+                    // Стартовые очки всегда доступны
+                    dot.style.opacity = '1';
+                    dot.style.cursor = 'pointer';
+                } else {
+                    dot.style.opacity = '1';
+                    dot.style.cursor = 'pointer';
+                }
+            });
+        }
+
+        // Валидация и переход на шаг 3
+        function validateAndGoToStep3() {
+            const startingPoints = getStartingPoints();
+            const totalSpent = getTotalSpentPoints();
+            const availablePoints = 4 - (totalSpent - startingPoints);
+            
+            if (availablePoints !== 0) {
+                alert(`Пожалуйста, распределите все 4 очка навыков. Осталось распределить: ${availablePoints}`);
+                return;
+            }
+            
+            goToStep(3);
         }
 
         // Случайный выбор playbook
@@ -1189,12 +1513,31 @@
 
         // Случайное заполнение шага 2
         function randomStep2() {
-            const randomNames = [
-                'Алекс', 'Джек', 'Майя', 'Рик', 'Луна', 'Сэм', 'Вик', 'Зои',
-                'Макс', 'Элла', 'Финн', 'Ира', 'Ной', 'Лия', 'Оливер', 'Ава'
-            ];
-            const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
-            document.getElementById('newCharacterName').value = randomName;
+            // Начинаем со стартовых навыков
+            characterActions = {};
+            if (selectedPlaybook && selectedPlaybook.startingActions) {
+                characterActions = { ...selectedPlaybook.startingActions };
+            }
+            
+            // Случайное распределение 4 дополнительных очков
+            const allActions = [];
+            Object.values(actionsData).forEach(category => {
+                allActions.push(...category);
+            });
+            
+            const startingPoints = getStartingPoints();
+            let pointsLeft = 4;
+            
+            while (pointsLeft > 0) {
+                const randomAction = allActions[Math.floor(Math.random() * allActions.length)];
+                const currentValue = characterActions[randomAction] || 0;
+                if (currentValue < 4) {
+                    characterActions[randomAction] = currentValue + 1;
+                    pointsLeft--;
+                }
+            }
+            
+            renderActionsDistribution();
         }
 
         // Случайное заполнение шага 3
@@ -1222,7 +1565,7 @@
             // Переходим на шаг 2
             goToStep(2);
             
-            // Шаг 2: Случайное имя (после перехода)
+            // Шаг 2: Случайное имя и навыки (после перехода)
             setTimeout(() => {
                 randomStep2();
                 
@@ -1252,17 +1595,20 @@
                 return;
             }
             
-            const name = document.getElementById('newCharacterName')?.value.trim();
-            if (!name) {
-                alert('Пожалуйста, введите имя персонажа');
+            const startingPoints = getStartingPoints();
+            const totalSpent = getTotalSpentPoints();
+            const availablePoints = 4 - (totalSpent - startingPoints);
+            
+            if (availablePoints !== 0) {
+                alert(`Пожалуйста, распределите все 4 очка навыков. Осталось распределить: ${availablePoints}`);
                 goToStep(2);
                 return;
             }
             
             const newChar = createEmptyCharacter();
-            newChar.name = name;
             newChar.playbook = selectedPlaybook.name;
-            // Остальные параметры будут установлены позже
+            newChar.actions = { ...characterActions };
+            // Имя и остальные параметры будут установлены позже
             
             characters[newChar.id] = newChar;
             currentCharacterId = newChar.id;
@@ -1287,14 +1633,12 @@
             // Сбрасываем состояние
             selectedPlaybook = null;
             currentWizardStep = 1;
+            characterActions = {};
             
             // Сбрасываем на первый шаг
             goToStep(1);
             
             // Очищаем форму и выделение
-            const nameInput = document.getElementById('newCharacterName');
-            if (nameInput) nameInput.value = '';
-            
             const playbookInput = document.getElementById('selectedPlaybookName');
             if (playbookInput) playbookInput.value = '';
             
