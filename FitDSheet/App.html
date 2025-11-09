@@ -224,6 +224,266 @@
         .menu-item-icon {
             font-size: 20px;
         }
+
+        /* Модальное окно создания персонажа */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--accent);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .modal-close:hover {
+            background: #363636;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background: #d35454;
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-secondary:hover {
+            background: #363636;
+        }
+
+        .btn-tertiary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-tertiary:hover {
+            background: #363636;
+        }
+
+        .wizard-navigation {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .wizard-nav-left {
+            display: flex;
+            gap: 10px;
+        }
+
+        .wizard-nav-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Многошаговый процесс создания */
+        .wizard-steps {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .wizard-step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .wizard-step.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: scale(1.2);
+        }
+
+        .wizard-step.completed {
+            background: #4caf50;
+            border-color: #4caf50;
+        }
+
+        .wizard-content {
+            min-height: 300px;
+        }
+
+        .wizard-step-content {
+            display: none;
+        }
+
+        .wizard-step-content.active {
+            display: block;
+        }
+
+        /* Карточки выбора playbook */
+        .playbook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .playbook-card {
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .playbook-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 69, 69, 0.3);
+        }
+
+        .playbook-card.selected {
+            border-color: var(--accent);
+            background: rgba(196, 69, 69, 0.1);
+        }
+
+        .playbook-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .playbook-description {
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .playbook-stats {
+            font-size: 12px;
+            color: var(--text-primary);
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .playbook-stats span {
+            display: block;
+            margin: 4px 0;
+        }
     </style>
 </head>
 <body>
@@ -363,12 +623,120 @@
     </div>
 
     <!-- Скрытые элементы для импорта -->
-    <input type="file" id="importFile" style="display: none;" accept=".json">
+        <input type="file" id="importFile" style="display: none;" accept=".json">
+
+    <!-- Модальное окно создания персонажа -->
+    <div class="modal-overlay" id="createCharacterModal" onclick="if(event.target === this) closeCreateModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>➕ Создать нового персонажа</h2>
+                <button class="modal-close" onclick="closeCreateModal()">×</button>
+            </div>
+            
+            <!-- Индикатор шагов -->
+            <div class="wizard-steps" id="wizardSteps">
+                <div class="wizard-step active" data-step="1"></div>
+                <div class="wizard-step" data-step="2"></div>
+                <div class="wizard-step" data-step="3"></div>
+                <div class="wizard-step" data-step="4"></div>
+            </div>
+            
+            <!-- Контент шагов -->
+            <div class="wizard-content">
+                <!-- Шаг 1: Выбор playbook -->
+                <div class="wizard-step-content active" id="step1">
+                    <h3 style="margin-bottom: 15px; color: var(--accent);">Выберите игровую книгу</h3>
+                    <p style="margin-bottom: 20px; color: #aaa; font-size: 14px;">
+                        Выберите класс вашего персонажа. Это определит его начальные характеристики и способности.
+                    </p>
+                    <div class="playbook-grid" id="playbookGrid">
+                        <!-- Карточки playbook будут добавлены через JavaScript -->
+                    </div>
+                    
+                    <div class="wizard-navigation">
+                        <div class="wizard-nav-left">
+                            <button type="button" class="btn-secondary" onclick="closeCreateModal()">Выход</button>
+                        </div>
+                        <div class="wizard-nav-right">
+                            <button type="button" class="btn-tertiary" onclick="randomPlaybook()">Случайно</button>
+                            <button type="button" class="btn-tertiary" onclick="autoCreateCharacter()">Авто</button>
+                            <button type="button" class="btn-primary" onclick="validateAndGoToStep2()">Далее</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Шаг 2: Имя и детали -->
+                <div class="wizard-step-content" id="step2">
+                    <h3 style="margin-bottom: 15px; color: var(--accent);">Основная информация</h3>
+                    <div class="form-group">
+                        <label for="newCharacterName">Имя персонажа *</label>
+                        <input type="text" id="newCharacterName" placeholder="Введите имя">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Выбранная игровая книга</label>
+                        <input type="text" id="selectedPlaybookName" readonly style="background: #2a2a2a; cursor: not-allowed;">
+                    </div>
+                    
+                    <div class="wizard-navigation">
+                        <div class="wizard-nav-left">
+                            <button type="button" class="btn-secondary" onclick="goToStep(1)">Назад</button>
+                        </div>
+                        <div class="wizard-nav-right">
+                            <button type="button" class="btn-tertiary" onclick="randomStep2()">Случайно</button>
+                            <button type="button" class="btn-tertiary" onclick="autoCreateCharacter()">Авто</button>
+                            <button type="button" class="btn-primary" onclick="goToStep(3)">Далее</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Шаг 3: (Пока пустой) -->
+                <div class="wizard-step-content" id="step3">
+                    <h3 style="margin-bottom: 15px; color: var(--accent);">Шаг 3</h3>
+                    <p style="margin-bottom: 20px; color: #aaa; font-size: 14px;">
+                        Содержимое шага 3 будет добавлено позже.
+                    </p>
+                    
+                    <div class="wizard-navigation">
+                        <div class="wizard-nav-left">
+                            <button type="button" class="btn-secondary" onclick="goToStep(2)">Назад</button>
+                        </div>
+                        <div class="wizard-nav-right">
+                            <button type="button" class="btn-tertiary" onclick="randomStep3()">Случайно</button>
+                            <button type="button" class="btn-tertiary" onclick="autoCreateCharacter()">Авто</button>
+                            <button type="button" class="btn-primary" onclick="goToStep(4)">Далее</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Шаг 4: (Пока пустой, последний) -->
+                <div class="wizard-step-content" id="step4">
+                    <h3 style="margin-bottom: 15px; color: var(--accent);">Шаг 4</h3>
+                    <p style="margin-bottom: 20px; color: #aaa; font-size: 14px;">
+                        Содержимое шага 4 будет добавлено позже.
+                    </p>
+                    
+                    <div class="wizard-navigation">
+                        <div class="wizard-nav-left">
+                            <button type="button" class="btn-secondary" onclick="goToStep(3)">Назад</button>
+                        </div>
+                        <div class="wizard-nav-right">
+                            <button type="button" class="btn-secondary" onclick="closeCreateModal()">Отмена</button>
+                            <button type="button" class="btn-primary" onclick="finishCharacterCreation()">ОК</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Система управления персонажами
         let currentCharacterId = null;
         let characters = {};
+        let playbooks = [];
+        let selectedPlaybook = null;
+        let currentWizardStep = 1;
         
         // Базовый шаблон персонажа
         function createEmptyCharacter() {
@@ -403,27 +771,27 @@
             // Если нет персонажей, создаем дефолтного
             if (Object.keys(characters).length === 0) {
                 const defaultChar = {
-                    id: 'character-1',
-                    name: 'Корбин',
-                    playbook: 'Призрак',
-                    actions: {
-                        insight: ['Проницательность', 'Проницательность', 'Проницательность'],
-                        prowess: ['Сноровка', 'Сноровка']
-                    },
-                    stress: {
-                        current: 2,
-                        max: 9
-                    },
-                    traumas: [false, false, false, false],
-                    coins: 4,
-                    load: 3,
-                    equipment: [
-                        { name: 'Кинжал', used: false },
-                        { name: 'Кожаный доспех', used: false },
-                        { name: 'Крюки', used: true }
-                    ],
-                    contacts: [
-                        { name: 'Старый Грег', description: 'Бывший напарник, теперь сторож на складах.' }
+            id: 'character-1',
+            name: 'Корбин',
+            playbook: 'Призрак',
+            actions: {
+                insight: ['Проницательность', 'Проницательность', 'Проницательность'],
+                prowess: ['Сноровка', 'Сноровка']
+            },
+            stress: {
+                current: 2,
+                max: 9
+            },
+            traumas: [false, false, false, false],
+            coins: 4,
+            load: 3,
+            equipment: [
+                { name: 'Кинжал', used: false },
+                { name: 'Кожаный доспех', used: false },
+                { name: 'Крюки', used: true }
+            ],
+            contacts: [
+                { name: 'Старый Грег', description: 'Бывший напарник, теперь сторож на складах.' }
                     ],
                     xpTriggers: []
                 };
@@ -491,7 +859,12 @@
 
 
         // Инициализация при загрузке
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Загружаем playbooks
+            await loadPlaybooks();
+            renderPlaybooks();
+            
+            // Загружаем персонажей
             loadCharacters();
             
             // Автосохранение при изменении полей
@@ -501,6 +874,16 @@
                 if (field) {
                     field.addEventListener('input', autoSave);
                     field.addEventListener('change', autoSave);
+                }
+            });
+            
+            // Закрытие модального окна по Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('createCharacterModal');
+                    if (modal && modal.classList.contains('active')) {
+                        closeCreateModal();
+                    }
                 }
             });
         });
@@ -658,20 +1041,276 @@
         }
 
 
-        // Создание нового персонажа
-        function createNewCharacter() {
-            updateCharacterFromUI(); // Сохраняем текущего
-            
-            const newChar = createEmptyCharacter();
-            const name = prompt('Имя нового персонажа:', 'Новый персонаж');
-            if (name !== null) {
-                newChar.name = name;
-                characters[newChar.id] = newChar;
-                currentCharacterId = newChar.id;
-                loadCharacter(newChar.id);
-                closeMenu();
+        // Загрузка playbooks из JSON
+        async function loadPlaybooks() {
+            try {
+                const response = await fetch('playbooks.json');
+                const data = await response.json();
+                playbooks = data.playbooks || [];
+                console.log('Playbooks загружены:', playbooks);
+            } catch (error) {
+                console.error('Ошибка загрузки playbooks:', error);
+                // Fallback на встроенные данные
+                playbooks = [
+                    {
+                        id: "cutter",
+                        name: "Головорез",
+                        description: "Головорезы хороши в сражениях с насилием и запугиванием. Выбери Головореза, если хочешь прокладывать себе путь боем."
+                    },
+                    {
+                        id: "hound",
+                        name: "Ищейка",
+                        description: "Ищейки хороши в выслеживании и дальнобойном бою. Выбери Ищейку, если хочешь диктовать бой на своих условиях."
+                    },
+                    {
+                        id: "leech",
+                        name: "Умелец",
+                        description: "Умельцы хороши в алхимии, механике и саботаже. Выбери Умельца, если хочешь использовать странные вещества и инструменты."
+                    },
+                    {
+                        id: "lurk",
+                        name: "Проныра",
+                        description: "Проныры хороши в тихом передвижении и незаметном проникновении. Выбери Проныру, если хочешь проводить время в тенях."
+                    },
+                    {
+                        id: "slide",
+                        name: "Артист",
+                        description: "Артисты хороши в социальном взаимодействии и обмане. Выбери Артиста, если хочешь манипулировать и вводить людей в заблуждение."
+                    },
+                    {
+                        id: "spider",
+                        name: "Кукловод",
+                        description: "Кукловоды хороши в продуманных планах и манёврах. Выбери Кукловода, если хочешь помогать товарищам и вести дела с другими организациями."
+                    },
+                    {
+                        id: "whisper",
+                        name: "Мистик",
+                        description: "Мистики хороши в магических ритуалах и взаимодействии с призраками. Выбери Мистика, если хочешь соприкоснуться с мистическими силами."
+                    }
+                ];
             }
         }
+
+        // Отображение карточек playbook
+        function renderPlaybooks() {
+            const grid = document.getElementById('playbookGrid');
+            grid.innerHTML = '';
+            
+            playbooks.forEach(playbook => {
+                const card = document.createElement('div');
+                card.className = 'playbook-card';
+                card.onclick = () => selectPlaybook(playbook, card);
+                
+                card.innerHTML = `
+                    <div class="playbook-name">${playbook.name}</div>
+                    <div class="playbook-description">${playbook.description}</div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Выбор playbook
+        function selectPlaybook(playbook, cardElement) {
+            selectedPlaybook = playbook;
+            
+            // Обновляем визуальное выделение
+            document.querySelectorAll('.playbook-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            if (cardElement) {
+                cardElement.classList.add('selected');
+            }
+            
+            // Обновляем поле выбранного playbook на шаге 2
+            if (document.getElementById('selectedPlaybookName')) {
+                document.getElementById('selectedPlaybookName').value = playbook.name;
+            }
+        }
+
+        // Валидация и переход на шаг 2
+        function validateAndGoToStep2() {
+            if (!selectedPlaybook) {
+                alert('Пожалуйста, выберите игровую книгу');
+                return;
+            }
+            goToStep(2);
+        }
+
+        // Навигация по шагам
+        function goToStep(step) {
+            if (step < 1 || step > 4) return;
+            
+            currentWizardStep = step;
+            
+            // Скрываем все шаги
+            document.querySelectorAll('.wizard-step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Показываем нужный шаг
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            // Обновляем индикатор шагов
+            document.querySelectorAll('.wizard-step').forEach((stepEl, index) => {
+                stepEl.classList.remove('active', 'completed');
+                const stepNum = index + 1;
+                
+                if (stepNum === step) {
+                    stepEl.classList.add('active');
+                } else if (stepNum < step) {
+                    stepEl.classList.add('completed');
+                }
+            });
+            
+            // Если переходим на шаг 2, заполняем информацию о выбранном playbook
+            if (step === 2 && selectedPlaybook) {
+                document.getElementById('selectedPlaybookName').value = selectedPlaybook.name;
+                const nameInput = document.getElementById('newCharacterName');
+                if (nameInput) {
+                    setTimeout(() => nameInput.focus(), 100);
+                }
+            }
+        }
+
+        // Случайный выбор playbook
+        function randomPlaybook() {
+            if (playbooks.length === 0) return;
+            
+            const randomIndex = Math.floor(Math.random() * playbooks.length);
+            const randomPlaybook = playbooks[randomIndex];
+            
+            // Находим карточку и выбираем её
+            const cards = document.querySelectorAll('.playbook-card');
+            if (cards[randomIndex]) {
+                selectPlaybook(randomPlaybook, cards[randomIndex]);
+            }
+        }
+
+        // Случайное заполнение шага 2
+        function randomStep2() {
+            const randomNames = [
+                'Алекс', 'Джек', 'Майя', 'Рик', 'Луна', 'Сэм', 'Вик', 'Зои',
+                'Макс', 'Элла', 'Финн', 'Ира', 'Ной', 'Лия', 'Оливер', 'Ава'
+            ];
+            const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
+            document.getElementById('newCharacterName').value = randomName;
+        }
+
+        // Случайное заполнение шага 3
+        function randomStep3() {
+            // Пока шаг 3 пустой, функция будет добавлена позже
+            console.log('Случайное заполнение шага 3');
+        }
+
+        // Автоматическое создание персонажа
+        function autoCreateCharacter() {
+            // Шаг 1: Случайный playbook
+            if (!selectedPlaybook && playbooks.length > 0) {
+                const randomIndex = Math.floor(Math.random() * playbooks.length);
+                const randomPlaybook = playbooks[randomIndex];
+                selectedPlaybook = randomPlaybook;
+                
+                // Обновляем визуальное выделение
+                const cards = document.querySelectorAll('.playbook-card');
+                cards.forEach(card => card.classList.remove('selected'));
+                if (cards[randomIndex]) {
+                    cards[randomIndex].classList.add('selected');
+                }
+            }
+            
+            // Переходим на шаг 2
+            goToStep(2);
+            
+            // Шаг 2: Случайное имя (после перехода)
+            setTimeout(() => {
+                randomStep2();
+                
+                // Переходим на шаг 3
+                setTimeout(() => {
+                    randomStep3();
+                    goToStep(3);
+                    
+                    // Переходим на шаг 4
+                    setTimeout(() => {
+                        goToStep(4);
+                        
+                        // Завершаем создание
+                        setTimeout(() => {
+                            finishCharacterCreation();
+                        }, 500);
+                    }, 500);
+                }, 500);
+            }, 300);
+        }
+
+        // Завершение создания персонажа
+        function finishCharacterCreation() {
+            if (!selectedPlaybook) {
+                alert('Пожалуйста, выберите игровую книгу');
+                goToStep(1);
+                return;
+            }
+            
+            const name = document.getElementById('newCharacterName')?.value.trim();
+            if (!name) {
+                alert('Пожалуйста, введите имя персонажа');
+                goToStep(2);
+                return;
+            }
+            
+            const newChar = createEmptyCharacter();
+            newChar.name = name;
+            newChar.playbook = selectedPlaybook.name;
+            // Остальные параметры будут установлены позже
+            
+            characters[newChar.id] = newChar;
+            currentCharacterId = newChar.id;
+            loadCharacter(newChar.id);
+            closeCreateModal();
+        }
+
+        // Открытие модального окна создания персонажа
+        function createNewCharacter() {
+            updateCharacterFromUI(); // Сохраняем текущего
+            selectedPlaybook = null;
+            currentWizardStep = 1;
+            openCreateModal();
+            closeMenu();
+        }
+
+        // Открытие модального окна
+        function openCreateModal() {
+            const modal = document.getElementById('createCharacterModal');
+            modal.classList.add('active');
+            
+            // Сбрасываем состояние
+            selectedPlaybook = null;
+            currentWizardStep = 1;
+            
+            // Сбрасываем на первый шаг
+            goToStep(1);
+            
+            // Очищаем форму и выделение
+            const nameInput = document.getElementById('newCharacterName');
+            if (nameInput) nameInput.value = '';
+            
+            const playbookInput = document.getElementById('selectedPlaybookName');
+            if (playbookInput) playbookInput.value = '';
+            
+            document.querySelectorAll('.playbook-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+        }
+
+        // Закрытие модального окна
+        function closeCreateModal() {
+            const modal = document.getElementById('createCharacterModal');
+            modal.classList.remove('active');
+            selectedPlaybook = null;
+            currentWizardStep = 1;
+        }
+
 
         // Экспорт в JSON
         function exportToJSON() {
