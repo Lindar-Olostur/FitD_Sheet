@@ -554,6 +554,48 @@
                         border-color: var(--accent);
                         background: rgba(196, 69, 69, 0.2);
                     }
+                    
+                    /* Карточки способностей */
+                    .ability-card {
+                        background: var(--bg-primary);
+                        border: 2px solid var(--border);
+                        border-radius: 8px;
+                        padding: 15px;
+                        margin-bottom: 12px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                    }
+                    
+                    .ability-card:hover {
+                        border-color: var(--accent);
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(196, 69, 69, 0.3);
+                    }
+                    
+                    .ability-card.selected {
+                        border-color: var(--accent);
+                        background: rgba(196, 69, 69, 0.1);
+                    }
+                    
+                    .ability-name {
+                        font-size: 16px;
+                        font-weight: bold;
+                        color: var(--accent);
+                        margin-bottom: 8px;
+                    }
+                    
+                    .ability-description {
+                        font-size: 13px;
+                        color: #aaa;
+                        line-height: 1.4;
+                    }
+                    
+                    .ability-playbook {
+                        font-size: 11px;
+                        color: #888;
+                        margin-top: 8px;
+                        font-style: italic;
+                    }
                 </style>
     </head>
     <body>
@@ -765,22 +807,26 @@
                             </div>
                         </div>
                         
-                        <!-- Шаг 3: (Пока пустой) -->
+                        <!-- Шаг 3: Выбор способности -->
                         <div class="wizard-step-content" id="step3">
-                            <h3 style="margin-bottom: 15px; color: var(--accent);">Шаг 3</h3>
+                            <h3 style="margin-bottom: 15px; color: var(--accent);">Выберите способность класса</h3>
                             <p style="margin-bottom: 20px; color: #aaa; font-size: 14px;">
-                            Содержимое шага 3 будет добавлено позже.
+                            Выберите одну способность из доступных для вашего класса.
                             </p>
                             
-                            <div class="wizard-navigation">
+                            <div class="wizard-navigation" style="margin-top: 0; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border);">
                                 <div class="wizard-nav-left">
                                     <button type="button" class="btn-secondary" onclick="goToStep(2)">Назад</button>
                                 </div>
                                 <div class="wizard-nav-right">
                                     <button type="button" class="btn-tertiary" onclick="randomStep3()">Случайно</button>
                                     <button type="button" class="btn-tertiary" onclick="autoCreateCharacter()">Авто</button>
-                                    <button type="button" class="btn-primary" onclick="goToStep(4)">Далее</button>
+                                    <button type="button" class="btn-primary" onclick="validateAndGoToStep4()">Далее</button>
                                 </div>
+                            </div>
+                            
+                            <div id="abilitiesList" style="max-height: 400px; overflow-y: auto;">
+                                <!-- Способности будут добавлены через JavaScript -->
                             </div>
                         </div>
                         
@@ -1144,6 +1190,7 @@
                 let selectedPlaybook = null;
                 let currentWizardStep = 1;
                 let characterActions = {}; // Распределенные очки навыков
+                let selectedAbility = null; // Выбранная способность
                 
                 // Базовый шаблон персонажа
                 function createEmptyCharacter() {
@@ -1523,6 +1570,11 @@
                         // Инициализируем распределение навыков
                         initializeActionsDistribution();
                     }
+                    
+                    // Если переходим на шаг 3, инициализируем отображение способностей
+                    if (step === 3 && selectedPlaybook) {
+                        renderAbilities();
+                    }
                 }
                 
                 // Инициализация распределения навыков
@@ -1704,6 +1756,117 @@
                     goToStep(3);
                 }
                 
+                // Отображение способностей
+                function renderAbilities() {
+                    const container = document.getElementById('abilitiesList');
+                    if (!container) {
+                        console.error('Контейнер abilitiesList не найден');
+                        return;
+                    }
+                    
+                    container.innerHTML = '';
+                    
+                    if (!selectedPlaybook) {
+                        container.innerHTML = '<p style="color: #aaa;">Пожалуйста, сначала выберите игровую книгу</p>';
+                        return;
+                    }
+                    
+                    // Отображаем способности выбранного класса
+                    selectedPlaybook.abilities.forEach((ability, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'ability-card';
+                        if (selectedAbility && selectedAbility.name === ability.name && selectedAbility.playbookId === selectedPlaybook.id) {
+                            card.classList.add('selected');
+                        }
+                        
+                        card.onclick = () => selectAbility(ability, selectedPlaybook.id);
+                        
+                        card.innerHTML = `
+                            <div class="ability-name">${ability.name}</div>
+                            <div class="ability-description">${ability.description}</div>
+                        `;
+                        
+                        container.appendChild(card);
+                    });
+                }
+                
+                // Выбор способности
+                function selectAbility(ability, playbookId) {
+                    // Если выбрана "Необычный", показываем все способности всех классов
+                    if (ability.name === 'Необычный') {
+                        showAllAbilities();
+                        return;
+                    }
+                    
+                    // Сохраняем выбранную способность
+                    selectedAbility = {
+                        name: ability.name,
+                        description: ability.description,
+                        playbookId: playbookId
+                    };
+                    
+                    // Обновляем отображение
+                    renderAbilities();
+                }
+                
+                // Отображение всех способностей всех классов
+                function showAllAbilities() {
+                    const container = document.getElementById('abilitiesList');
+                    if (!container) return;
+                    
+                    container.innerHTML = '';
+                    
+                    // Добавляем заголовок с кнопкой "Назад"
+                    const header = document.createElement('div');
+                    header.style.cssText = 'margin-bottom: 15px; padding: 10px; background: rgba(196, 69, 69, 0.1); border-radius: 6px; border-left: 3px solid var(--accent); display: flex; justify-content: space-between; align-items: center;';
+                    header.innerHTML = `
+                        <strong style="color: var(--accent);">Выберите способность из любого класса:</strong>
+                        <button class="btn-tertiary" onclick="renderAbilities()" style="margin: 0; padding: 6px 12px; font-size: 12px;">← Назад к способностям класса</button>
+                    `;
+                    container.appendChild(header);
+                    
+                    // Проходим по всем классам
+                    playbooks.forEach(playbook => {
+                        // Пропускаем "Необычный" из каждого класса, так как мы уже выбрали его
+                        playbook.abilities.forEach(ability => {
+                            if (ability.name === 'Необычный') return; // Пропускаем "Необычный"
+                            
+                            const card = document.createElement('div');
+                            card.className = 'ability-card';
+                            if (selectedAbility && selectedAbility.name === ability.name && selectedAbility.playbookId === playbook.id) {
+                                card.classList.add('selected');
+                            }
+                            
+                            card.onclick = () => {
+                                selectedAbility = {
+                                    name: ability.name,
+                                    description: ability.description,
+                                    playbookId: playbook.id
+                                };
+                                showAllAbilities(); // Обновляем список
+                            };
+                            
+                            card.innerHTML = `
+                                <div class="ability-name">${ability.name}</div>
+                                <div class="ability-description">${ability.description}</div>
+                                <div class="ability-playbook">Класс: ${playbook.name}</div>
+                            `;
+                            
+                            container.appendChild(card);
+                        });
+                    });
+                }
+                
+                // Валидация и переход на шаг 4
+                function validateAndGoToStep4() {
+                    if (!selectedAbility) {
+                        alert('Пожалуйста, выберите способность');
+                        return;
+                    }
+                    
+                    goToStep(4);
+                }
+                
                 // Случайный выбор playbook
                 function randomPlaybook() {
                     if (playbooks.length === 0) return;
@@ -1749,8 +1912,44 @@
                 
                 // Случайное заполнение шага 3
                 function randomStep3() {
-                    // Пока шаг 3 пустой, функция будет добавлена позже
-                    console.log('Случайное заполнение шага 3');
+                    if (!selectedPlaybook) return;
+                    
+                    // Случайно выбираем способность из доступных
+                    const availableAbilities = selectedPlaybook.abilities;
+                    if (availableAbilities.length === 0) return;
+                    
+                    const randomIndex = Math.floor(Math.random() * availableAbilities.length);
+                    const randomAbility = availableAbilities[randomIndex];
+                    
+                    // Если выбрана "Необычный", случайно выбираем из всех способностей
+                    if (randomAbility.name === 'Необычный') {
+                        // Собираем все способности всех классов (кроме "Необычный")
+                        const allAbilities = [];
+                        playbooks.forEach(playbook => {
+                            playbook.abilities.forEach(ability => {
+                                if (ability.name !== 'Необычный') {
+                                    allAbilities.push({ ability, playbookId: playbook.id });
+                                }
+                            });
+                        });
+                        
+                        if (allAbilities.length > 0) {
+                            const randomAllAbility = allAbilities[Math.floor(Math.random() * allAbilities.length)];
+                            selectedAbility = {
+                                name: randomAllAbility.ability.name,
+                                description: randomAllAbility.ability.description,
+                                playbookId: randomAllAbility.playbookId
+                            };
+                            showAllAbilities();
+                        }
+                    } else {
+                        selectedAbility = {
+                            name: randomAbility.name,
+                            description: randomAbility.description,
+                            playbookId: selectedPlaybook.id
+                        };
+                        renderAbilities();
+                    }
                 }
                 
                 // Автоматическое создание персонажа
@@ -1812,9 +2011,16 @@
                         return;
                     }
                     
+                    if (!selectedAbility) {
+                        alert('Пожалуйста, выберите способность');
+                        goToStep(3);
+                        return;
+                    }
+                    
                     const newChar = createEmptyCharacter();
                     newChar.playbook = selectedPlaybook.name;
                     newChar.actions = { ...characterActions };
+                    newChar.selectedAbility = selectedAbility;
                     // Имя и остальные параметры будут установлены позже
                     
                     characters[newChar.id] = newChar;
@@ -1841,6 +2047,7 @@
                     selectedPlaybook = null;
                     currentWizardStep = 1;
                     characterActions = {};
+                    selectedAbility = null;
                     
                     // Сбрасываем на первый шаг
                     goToStep(1);
@@ -1860,6 +2067,7 @@
                     modal.classList.remove('active');
                     selectedPlaybook = null;
                     currentWizardStep = 1;
+                    selectedAbility = null;
                 }
                 
                 
