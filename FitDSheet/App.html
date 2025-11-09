@@ -596,6 +596,102 @@
                         margin-top: 8px;
                         font-style: italic;
                     }
+                    
+                    /* Кастомный combobox для прошлого */
+                    .combobox-container {
+                        position: relative;
+                        width: 100%;
+                    }
+                    
+                    .combobox-input {
+                        width: 100%;
+                        padding: 10px;
+                        background: var(--bg-primary);
+                        border: 1px solid var(--border);
+                        color: var(--text-primary);
+                        border-radius: 4px;
+                        font-size: 14px;
+                        cursor: pointer;
+                    }
+                    
+                    .combobox-input:focus {
+                        outline: none;
+                        border-color: var(--accent);
+                    }
+                    
+                    .combobox-dropdown {
+                        position: absolute;
+                        top: 100%;
+                        left: 0;
+                        right: 0;
+                        background: var(--bg-secondary);
+                        border: 1px solid var(--border);
+                        border-radius: 4px;
+                        max-height: 400px;
+                        overflow-y: auto;
+                        z-index: 1000;
+                        display: none;
+                        margin-top: 4px;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+                    }
+                    
+                    .combobox-dropdown.active {
+                        display: block;
+                    }
+                    
+                    .combobox-category {
+                        padding: 12px;
+                        border-bottom: 1px solid var(--border);
+                        cursor: pointer;
+                        transition: background 0.2s;
+                    }
+                    
+                    .combobox-category:hover {
+                        background: #363636;
+                    }
+                    
+                    .combobox-category-title {
+                        font-weight: bold;
+                        color: var(--accent);
+                        margin-bottom: 6px;
+                        font-size: 14px;
+                    }
+                    
+                    .combobox-category-examples {
+                        font-size: 12px;
+                        color: #aaa;
+                        line-height: 1.4;
+                    }
+                    
+                    .combobox-professions {
+                        padding: 8px 12px;
+                        background: var(--bg-primary);
+                        border-top: 1px solid var(--border);
+                    }
+                    
+                    .combobox-profession {
+                        padding: 8px 12px;
+                        cursor: pointer;
+                        border-radius: 4px;
+                        margin: 2px 0;
+                        font-size: 13px;
+                        transition: background 0.2s;
+                    }
+                    
+                    .combobox-profession:hover {
+                        background: #363636;
+                    }
+                    
+                    .combobox-profession-input {
+                        width: 100%;
+                        padding: 8px;
+                        background: var(--bg-primary);
+                        border: 1px solid var(--border);
+                        color: var(--text-primary);
+                        border-radius: 4px;
+                        font-size: 13px;
+                        margin-top: 8px;
+                    }
                 </style>
     </head>
     <body>
@@ -830,20 +926,65 @@
                             </div>
                         </div>
                         
-                        <!-- Шаг 4: (Пока пустой, последний) -->
+                        <!-- Шаг 4: Дополнительная информация -->
                         <div class="wizard-step-content" id="step4">
-                            <h3 style="margin-bottom: 15px; color: var(--accent);">Шаг 4</h3>
+                            <h3 style="margin-bottom: 15px; color: var(--accent);">Дополнительная информация</h3>
                             <p style="margin-bottom: 20px; color: #aaa; font-size: 14px;">
-                            Содержимое шага 4 будет добавлено позже.
+                            Завершите создание персонажа, выбрав происхождение, прошлое и опасных знакомых.
                             </p>
                             
-                            <div class="wizard-navigation">
+                            <div class="wizard-navigation" style="margin-top: 0; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border);">
                                 <div class="wizard-nav-left">
                                     <button type="button" class="btn-secondary" onclick="goToStep(3)">Назад</button>
                                 </div>
                                 <div class="wizard-nav-right">
                                     <button type="button" class="btn-secondary" onclick="closeCreateModal()">Отмена</button>
-                                    <button type="button" class="btn-primary" onclick="finishCharacterCreation()">ОК</button>
+                                    <button type="button" class="btn-primary" onclick="finishCharacterCreation()">Завершить</button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Имя / Прозвище</label>
+                                <input type="text" id="characterNameInput" placeholder="Введите имя или прозвище персонажа" style="width: 100%;">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Происхождение</label>
+                                <div class="combobox-container">
+                                    <input type="text" id="originComboboxInput" class="combobox-input" placeholder="Выберите происхождение">
+                                    <div id="originComboboxDropdown" class="combobox-dropdown">
+                                        <!-- Происхождения будут добавлены через JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Прошлое</label>
+                                <div class="combobox-container">
+                                    <input type="text" id="backgroundComboboxInput" class="combobox-input" placeholder="Выберите категорию прошлого">
+                                    <div id="backgroundComboboxDropdown" class="combobox-dropdown">
+                                        <!-- Категории будут добавлены через JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Друг (из опасных знакомых)</label>
+                                <div class="combobox-container">
+                                    <input type="text" id="friendComboboxInput" class="combobox-input" placeholder="Выберите друга">
+                                    <div id="friendComboboxDropdown" class="combobox-dropdown">
+                                        <!-- Друзья будут добавлены через JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Враг (из опасных знакомых)</label>
+                                <div class="combobox-container">
+                                    <input type="text" id="enemyComboboxInput" class="combobox-input" placeholder="Выберите врага">
+                                    <div id="enemyComboboxDropdown" class="combobox-dropdown">
+                                        <!-- Враги будут добавлены через JavaScript -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1266,6 +1407,10 @@
                 let currentWizardStep = 1;
                 let characterActions = {}; // Распределенные очки навыков
                 let selectedAbility = null; // Выбранная способность
+                let selectedOrigin = null; // Выбранное происхождение
+                let selectedBackground = null; // Выбранное прошлое
+                let selectedFriend = null; // Выбранный друг
+                let selectedEnemy = null; // Выбранный враг
                 
                 // Базовый шаблон персонажа
                 function createEmptyCharacter() {
@@ -1430,8 +1575,27 @@
                     createTracker('traumaTrack', 4, (char.traumas || []).filter(t => t).length, 'trauma');
                     
                     // Подсчитываем действия
-                    const insightCount = (char.actions?.insight || []).length;
-                    const prowessCount = (char.actions?.prowess || []).length;
+                    // Если actions - объект (новая структура)
+                    let insightCount = 0;
+                    let prowessCount = 0;
+                    
+                    if (char.actions && typeof char.actions === 'object' && !Array.isArray(char.actions)) {
+                        // Новая структура: объект с названиями действий и очками
+                        Object.keys(char.actions).forEach(actionName => {
+                            const points = char.actions[actionName] || 0;
+                            // Определяем категорию действия
+                            if (actionsData['Чутьё'] && actionsData['Чутьё'].includes(actionName)) {
+                                insightCount += points;
+                            } else if (actionsData['Удаль'] && actionsData['Удаль'].includes(actionName)) {
+                                prowessCount += points;
+                            }
+                        });
+                    } else {
+                        // Старая структура: массивы
+                        insightCount = (char.actions?.insight || []).length;
+                        prowessCount = (char.actions?.prowess || []).length;
+                    }
+                    
                     createTracker('insightTrack', 4, insightCount, 'action');
                     createTracker('prowessTrack', 4, prowessCount, 'action');
                     createTracker('xpTrack', 6, 0, 'xp');
@@ -1649,6 +1813,11 @@
                     // Если переходим на шаг 3, инициализируем отображение способностей
                     if (step === 3 && selectedPlaybook) {
                         renderAbilities();
+                    }
+                    
+                    // Если переходим на шаг 4, инициализируем форму
+                    if (step === 4) {
+                        initializeStep4();
                     }
                 }
                 
@@ -1942,6 +2111,296 @@
                     goToStep(4);
                 }
                 
+                // Инициализация шага 4
+                function initializeStep4() {
+                    // Инициализация combobox для происхождения
+                    const originInput = document.getElementById('originComboboxInput');
+                    const originDropdown = document.getElementById('originComboboxDropdown');
+                    
+                    if (originInput && originDropdown) {
+                        const showOrigins = function() {
+                            originDropdown.innerHTML = '';
+                            Object.keys(originsData).forEach(originName => {
+                                const originDiv = document.createElement('div');
+                                originDiv.className = 'combobox-category';
+                                originDiv.innerHTML = `
+                                    <div class="combobox-category-title">${originName}</div>
+                                    <div class="combobox-category-examples">${originsData[originName]}</div>
+                                `;
+                                originDiv.onclick = (e) => {
+                                    e.stopPropagation();
+                                    selectedOrigin = originName;
+                                    originInput.value = originName;
+                                    originDropdown.classList.remove('active');
+                                };
+                                originDropdown.appendChild(originDiv);
+                            });
+                            originDropdown.classList.add('active');
+                        };
+                        
+                        originInput.onclick = (e) => {
+                            e.stopPropagation();
+                            showOrigins();
+                        };
+                        
+                        originInput.onfocus = function() {
+                            // Открываем dropdown при фокусе, если он еще не открыт
+                            if (!originDropdown.classList.contains('active')) {
+                                showOrigins();
+                            }
+                        };
+                        
+                        // Обработка ручного редактирования
+                        originInput.oninput = function() {
+                            selectedOrigin = this.value.trim() || null;
+                        };
+                        
+                        // Восстановление состояния
+                        if (selectedOrigin) {
+                            originInput.value = selectedOrigin;
+                        }
+                        
+                        // Закрытие dropdown при клике вне его
+                        document.addEventListener('click', function(e) {
+                            if (!originInput.contains(e.target) && !originDropdown.contains(e.target)) {
+                                originDropdown.classList.remove('active');
+                            }
+                        });
+                    }
+                    
+                    // Инициализация combobox для прошлого
+                    const backgroundInput = document.getElementById('backgroundComboboxInput');
+                    const backgroundDropdown = document.getElementById('backgroundComboboxDropdown');
+                    
+                    if (backgroundInput && backgroundDropdown) {
+                        // Функция для отображения списка категорий
+                        const showCategories = function() {
+                            backgroundDropdown.innerHTML = '';
+                            Object.keys(backgroundsData).forEach(category => {
+                                const categoryDiv = document.createElement('div');
+                                categoryDiv.className = 'combobox-category';
+                                categoryDiv.innerHTML = `
+                                    <div class="combobox-category-title">${category}</div>
+                                    <div class="combobox-category-examples">${backgroundsData[category]}</div>
+                                `;
+                                categoryDiv.onclick = (e) => {
+                                    e.stopPropagation();
+                                    // Сразу выбираем случайную профессию из категории
+                                    const examples = backgroundsData[category].split(', ');
+                                    const randomProfession = examples[Math.floor(Math.random() * examples.length)];
+                                    
+                                    // Сохраняем выбор
+                                    if (!selectedBackground) {
+                                        selectedBackground = { category: category, profession: '', custom: '' };
+                                    }
+                                    selectedBackground.category = category;
+                                    selectedBackground.profession = randomProfession;
+                                    selectedBackground.custom = '';
+                                    
+                                    // Показываем только название категории в поле
+                                    backgroundInput.value = category;
+                                    backgroundDropdown.classList.remove('active');
+                                };
+                                backgroundDropdown.appendChild(categoryDiv);
+                            });
+                            backgroundDropdown.classList.add('active');
+                        }
+                        
+                        // Обработка клика на input
+                        backgroundInput.onclick = (e) => {
+                            e.stopPropagation();
+                            showCategories();
+                        };
+                        
+                        // Обработка фокуса
+                        backgroundInput.onfocus = function() {
+                            // Открываем dropdown при фокусе, если он еще не открыт
+                            if (!backgroundDropdown.classList.contains('active')) {
+                                showCategories();
+                            }
+                        };
+                        
+                        // Обработка ручного редактирования
+                        backgroundInput.oninput = function() {
+                            const value = this.value.trim();
+                            // Если введенное значение совпадает с одной из категорий, сохраняем её
+                            if (Object.keys(backgroundsData).includes(value)) {
+                                if (!selectedBackground) {
+                                    selectedBackground = { category: value, profession: '', custom: '' };
+                                }
+                                selectedBackground.category = value;
+                                // Выбираем случайную профессию
+                                const examples = backgroundsData[value].split(', ');
+                                const randomProfession = examples[Math.floor(Math.random() * examples.length)];
+                                selectedBackground.profession = randomProfession;
+                                selectedBackground.custom = '';
+                            } else if (value) {
+                                // Если введено что-то другое, пытаемся найти похожую категорию
+                                const foundCategory = Object.keys(backgroundsData).find(cat => 
+                                    cat.toLowerCase().includes(value.toLowerCase()) || 
+                                    value.toLowerCase().includes(cat.toLowerCase())
+                                );
+                                if (foundCategory) {
+                                    if (!selectedBackground) {
+                                        selectedBackground = { category: foundCategory, profession: '', custom: '' };
+                                    }
+                                    selectedBackground.category = foundCategory;
+                                    const examples = backgroundsData[foundCategory].split(', ');
+                                    const randomProfession = examples[Math.floor(Math.random() * examples.length)];
+                                    selectedBackground.profession = randomProfession;
+                                    selectedBackground.custom = '';
+                                    // Обновляем поле на полное название категории
+                                    this.value = foundCategory;
+                                }
+                            }
+                        };
+                        
+                        // Закрытие dropdown при клике вне его
+                        document.addEventListener('click', function(e) {
+                            if (!backgroundInput.contains(e.target) && !backgroundDropdown.contains(e.target)) {
+                                backgroundDropdown.classList.remove('active');
+                            }
+                        });
+                        
+                        // Восстановление состояния, если уже выбрано прошлое
+                        if (selectedBackground && selectedBackground.category) {
+                            backgroundInput.value = selectedBackground.category;
+                        }
+                    }
+                    
+                    // Инициализация combobox для друга
+                    const friendInput = document.getElementById('friendComboboxInput');
+                    const friendDropdown = document.getElementById('friendComboboxDropdown');
+                    
+                    if (friendInput && friendDropdown && selectedPlaybook && selectedPlaybook.dangerousContacts) {
+                        const showFriends = function() {
+                            friendDropdown.innerHTML = '';
+                            selectedPlaybook.dangerousContacts.forEach(contact => {
+                                const contactDiv = document.createElement('div');
+                                contactDiv.className = 'combobox-category';
+                                contactDiv.innerHTML = `
+                                    <div class="combobox-category-title">${contact}</div>
+                                `;
+                                contactDiv.onclick = (e) => {
+                                    e.stopPropagation();
+                                    selectedFriend = contact;
+                                    friendInput.value = contact;
+                                    friendDropdown.classList.remove('active');
+                                    // Если выбран тот же контакт как враг, сбрасываем врага
+                                    if (selectedFriend === selectedEnemy) {
+                                        selectedEnemy = null;
+                                        const enemyInput = document.getElementById('enemyComboboxInput');
+                                        if (enemyInput) enemyInput.value = '';
+                                    }
+                                };
+                                friendDropdown.appendChild(contactDiv);
+                            });
+                            friendDropdown.classList.add('active');
+                        };
+                        
+                        friendInput.onclick = (e) => {
+                            e.stopPropagation();
+                            showFriends();
+                        };
+                        
+                        friendInput.onfocus = function() {
+                            // Открываем dropdown при фокусе, если он еще не открыт
+                            if (!friendDropdown.classList.contains('active')) {
+                                showFriends();
+                            }
+                        };
+                        
+                        // Обработка ручного редактирования
+                        friendInput.oninput = function() {
+                            selectedFriend = this.value.trim() || null;
+                            // Если выбран тот же контакт как враг, сбрасываем врага
+                            if (selectedFriend && selectedFriend === selectedEnemy) {
+                                selectedEnemy = null;
+                                const enemyInput = document.getElementById('enemyComboboxInput');
+                                if (enemyInput) enemyInput.value = '';
+                            }
+                        };
+                        
+                        // Восстановление состояния
+                        if (selectedFriend) {
+                            friendInput.value = selectedFriend;
+                        }
+                        
+                        // Закрытие dropdown при клике вне его
+                        document.addEventListener('click', function(e) {
+                            if (!friendInput.contains(e.target) && !friendDropdown.contains(e.target)) {
+                                friendDropdown.classList.remove('active');
+                            }
+                        });
+                    }
+                    
+                    // Инициализация combobox для врага
+                    const enemyInput = document.getElementById('enemyComboboxInput');
+                    const enemyDropdown = document.getElementById('enemyComboboxDropdown');
+                    
+                    if (enemyInput && enemyDropdown && selectedPlaybook && selectedPlaybook.dangerousContacts) {
+                        const showEnemies = function() {
+                            enemyDropdown.innerHTML = '';
+                            selectedPlaybook.dangerousContacts.forEach(contact => {
+                                const contactDiv = document.createElement('div');
+                                contactDiv.className = 'combobox-category';
+                                contactDiv.innerHTML = `
+                                    <div class="combobox-category-title">${contact}</div>
+                                `;
+                                contactDiv.onclick = (e) => {
+                                    e.stopPropagation();
+                                    selectedEnemy = contact;
+                                    enemyInput.value = contact;
+                                    enemyDropdown.classList.remove('active');
+                                    // Если выбран тот же контакт как друг, сбрасываем друга
+                                    if (selectedEnemy === selectedFriend) {
+                                        selectedFriend = null;
+                                        const friendInput = document.getElementById('friendComboboxInput');
+                                        if (friendInput) friendInput.value = '';
+                                    }
+                                };
+                                enemyDropdown.appendChild(contactDiv);
+                            });
+                            enemyDropdown.classList.add('active');
+                        };
+                        
+                        enemyInput.onclick = (e) => {
+                            e.stopPropagation();
+                            showEnemies();
+                        };
+                        
+                        enemyInput.onfocus = function() {
+                            // Открываем dropdown при фокусе, если он еще не открыт
+                            if (!enemyDropdown.classList.contains('active')) {
+                                showEnemies();
+                            }
+                        };
+                        
+                        // Обработка ручного редактирования
+                        enemyInput.oninput = function() {
+                            selectedEnemy = this.value.trim() || null;
+                            // Если выбран тот же контакт как друг, сбрасываем друга
+                            if (selectedEnemy && selectedEnemy === selectedFriend) {
+                                selectedFriend = null;
+                                const friendInput = document.getElementById('friendComboboxInput');
+                                if (friendInput) friendInput.value = '';
+                            }
+                        };
+                        
+                        // Восстановление состояния
+                        if (selectedEnemy) {
+                            enemyInput.value = selectedEnemy;
+                        }
+                        
+                        // Закрытие dropdown при клике вне его
+                        document.addEventListener('click', function(e) {
+                            if (!enemyInput.contains(e.target) && !enemyDropdown.contains(e.target)) {
+                                enemyDropdown.classList.remove('active');
+                            }
+                        });
+                    }
+                }
+                
                 // Случайный выбор playbook
                 function randomPlaybook() {
                     if (playbooks.length === 0) return;
@@ -2092,11 +2551,29 @@
                         return;
                     }
                     
+                    // Получаем данные шага 4 (необязательные)
+                    const nameInput = document.getElementById('characterNameInput');
+                    const characterName = nameInput ? nameInput.value.trim() : '';
+                    
                     const newChar = createEmptyCharacter();
+                    newChar.name = characterName || selectedPlaybook.name;
                     newChar.playbook = selectedPlaybook.name;
                     newChar.actions = { ...characterActions };
                     newChar.selectedAbility = selectedAbility;
-                    // Имя и остальные параметры будут установлены позже
+                    newChar.origin = selectedOrigin || null;
+                    
+                    if (selectedBackground && selectedBackground.category) {
+                        newChar.background = {
+                            category: selectedBackground.category,
+                            profession: selectedBackground.profession || '',
+                            custom: selectedBackground.custom || ''
+                        };
+                    } else {
+                        newChar.background = null;
+                    }
+                    
+                    newChar.friend = selectedFriend || null;
+                    newChar.enemy = selectedEnemy || null;
                     
                     characters[newChar.id] = newChar;
                     currentCharacterId = newChar.id;
@@ -2123,6 +2600,10 @@
                     currentWizardStep = 1;
                     characterActions = {};
                     selectedAbility = null;
+                    selectedOrigin = null;
+                    selectedBackground = null;
+                    selectedFriend = null;
+                    selectedEnemy = null;
                     
                     // Сбрасываем на первый шаг
                     goToStep(1);
@@ -2130,6 +2611,45 @@
                     // Очищаем форму и выделение
                     const playbookInput = document.getElementById('selectedPlaybookName');
                     if (playbookInput) playbookInput.value = '';
+                    
+                    const nameInput = document.getElementById('characterNameInput');
+                    if (nameInput) nameInput.value = '';
+                    
+                    const backgroundComboboxInput = document.getElementById('backgroundComboboxInput');
+                    if (backgroundComboboxInput) backgroundComboboxInput.value = '';
+                    
+                    const backgroundComboboxDropdown = document.getElementById('backgroundComboboxDropdown');
+                    if (backgroundComboboxDropdown) {
+                        backgroundComboboxDropdown.classList.remove('active');
+                        backgroundComboboxDropdown.innerHTML = '';
+                    }
+                    
+                    const originComboboxInput = document.getElementById('originComboboxInput');
+                    if (originComboboxInput) originComboboxInput.value = '';
+                    
+                    const originComboboxDropdown = document.getElementById('originComboboxDropdown');
+                    if (originComboboxDropdown) {
+                        originComboboxDropdown.classList.remove('active');
+                        originComboboxDropdown.innerHTML = '';
+                    }
+                    
+                    const friendComboboxInput = document.getElementById('friendComboboxInput');
+                    if (friendComboboxInput) friendComboboxInput.value = '';
+                    
+                    const friendComboboxDropdown = document.getElementById('friendComboboxDropdown');
+                    if (friendComboboxDropdown) {
+                        friendComboboxDropdown.classList.remove('active');
+                        friendComboboxDropdown.innerHTML = '';
+                    }
+                    
+                    const enemyComboboxInput = document.getElementById('enemyComboboxInput');
+                    if (enemyComboboxInput) enemyComboboxInput.value = '';
+                    
+                    const enemyComboboxDropdown = document.getElementById('enemyComboboxDropdown');
+                    if (enemyComboboxDropdown) {
+                        enemyComboboxDropdown.classList.remove('active');
+                        enemyComboboxDropdown.innerHTML = '';
+                    }
                     
                     document.querySelectorAll('.playbook-card').forEach(card => {
                         card.classList.remove('selected');
@@ -2143,6 +2663,10 @@
                     selectedPlaybook = null;
                     currentWizardStep = 1;
                     selectedAbility = null;
+                    selectedOrigin = null;
+                    selectedBackground = null;
+                    selectedFriend = null;
+                    selectedEnemy = null;
                 }
                 
                 
